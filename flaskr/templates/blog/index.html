@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-8 d-flex justify-content-between align-items-center">
+      <h1>{% block title %}Posts{% endblock %}</h1>
+      {% if g.user %}
+      <a class="btn btn-outline-success me-2" href="{{ url_for('blog.create') }}" type="button">New</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+</div>
+{% endblock header %}
+
+{% block content %}
+{% for post in posts %}
+<article class="media content-section">
+  <div class="media-body">
+    <div class="article-metadata">
+      <a class="mr-2" href="#">{{ post['username'] }}</a>
+      <small class="text-muted">{{ post['created'].strftime('%Y-%m-%d') }}</small>
+    </div>
+    <h2><a class="article-title" href="#">{{ post['title'] }}</a></h2>
+    <p class="article-content">{{ post['body'] }}</p>
+  </div>
+  {% if g.user['id'] == post['author_id'] %}
+  <a class="btn btn-outline-primary btn-sm action" role="button" href="{{ url_for('blog.update', id=post['id']) }}">Edit</a>
+  {% endif %}
+</article>
+{% if not loop.last %}
+<hr>
+{% endif %}
+{% endfor %}
+{% endblock %}

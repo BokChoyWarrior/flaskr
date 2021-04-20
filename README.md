@@ -10,23 +10,25 @@ To set up the app, you'll need some things installed:
 - git
 
 ## Setup
-1. First of all, create and navigate to a directory in which you'd like to store the project. E.g. `C:\Dev\Flask_site`
+1. First of all, create and navigate to a directory in which you'd like to store the project. E.g. `C:\Dev\`
 
-2. Create a virtual environment with
+2. Clone the project with `git clone https://github.com/BokChoyWarrior/flaskr`. In windows you'll need to run this from git bash terminal **Make sure you clone into the directory you made in step 1!**
+
+3. Change your current directory to `xyz/flaskr/`, so if you ran the **clone** command in `C:\Dev\`, you would now want to be inside `C:\Dev\flaskr\`
+
+4. Create a virtual environment with
     - Windows: `python -m venv venv`
     - Linux: `python3 -m venv venv`
 
-3. Clone the project with `git clone https://github.com/BokChoyWarrior/flaskr`. In windows you'll need to run this from git bash terminal **Make sure you clone into the directory you made in step 1!**
-
-4. Activate the virtual environment:
+5. Activate the virtual environment:
     - Windows: `venv\Scripts\activate.bat`
     - Linux: `source venv/bin/activate`
 
-5. Install required packages with `pip install -r requirements.txt`
+6. Install required packages with `pip install -r requirements.txt`
 
-6. Initialise database `flask init-db`
+7. Initialise database `flask init-db`
 
-7. Set environment variables and run app:
+8. Set environment variables and run app:
 
 #### Windows: 
 ```

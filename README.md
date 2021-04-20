@@ -75,3 +75,12 @@ Visit [http://127.0.0.1:5000/](http://127.0.0.1:5000/) to see the app!
 
 
 If you have any problems with installation let me know and I can help figure them out!
+
+### Testing
+To run some unit tests, you'll first need to install the project to the venv as a module.
+
+1. With the venv active, and in the root directory of the repository, use the command `pip install -e .`.
+
+2. You can then use command `pytest` to run the tests, or `coverage run -m pytest` to see the code coverage of said tests.
+
+More detailed explanation [on the flask tutorial site.](https://flask.palletsprojects.com/en/1.1.x/tutorial/tests/)

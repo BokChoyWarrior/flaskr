@@ -1,8 +1,12 @@
 from setuptools import find_packages, setup
 
 setup(
-    name='flaskr',
+    name='flaskr-BokChoyWarrior',
     version='1.0.0',
+    author='BokChoyWarrior',
+    project_urls={
+        "Github": "https://github.com/BokChoyWarrior/flaskr",
+    },
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,

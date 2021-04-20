@@ -1,0 +1,2 @@
+# flaskr
+Learning flask blog

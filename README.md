@@ -26,24 +26,23 @@ To set up the app, you'll need some things installed:
 
 6. Install required packages with `pip install -r requirements.txt`
 
-7. Initialise database `flask init-db`
-
-8. Set environment variables and run app:
-
-#### Windows: 
+7. Set environment variables:
+##### Windows: 
 ```
 set FLASK_APP=flaskr
 set FLASK_ENV=development
-flask run
 ```
 
-#### Linux:
+##### Linux:
 ```
 export FLASK_APP=flaskr
 export FLASK_ENV=development
-flask run
 ```
 
+
+8. Initialise database `flask init-db`
+
+9. Run the app with `flask run`!!!
 
 You should see output similar to this:
 ```

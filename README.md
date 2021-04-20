@@ -1,15 +1,30 @@
 # flaskr
-This repository is basically just a space for testing purposes - I plan to add api capabilities to it soon (because we will definitely need that in the future).
+Testing blog for testing things
 
-For now, it's just the simplest blog!
+### Planned Features
+##### General
+- [ ] Actual post page
+- [ ] Likes
+- [ ] Threaded comments
+- [ ] User profile
+- [ ] Different media type posts (video, audio, pic)
+- [ ] Blog sections
+- [ ] Pagination
 
+##### Tech stuff
+- [ ] Websockets (see likes realtime)
+- [ ] API
+
+
+## Setup
 ### Prerequisites
 To set up the app, you'll need some things installed:
 - python 3
 - pip
 - git
 
-## Setup
+If installing on linux, please make your your package manager is up-to-date and you have `python 3.6 or higher` and `python3-venv` installed.
+### Installation
 1. First of all, create and navigate to a directory in which you'd like to store the project. E.g. `C:\Dev\`
 
 2. Clone the project with `git clone https://github.com/BokChoyWarrior/flaskr`. In windows you'll need to run this from git bash terminal **Make sure you clone into the directory you made in step 1!**

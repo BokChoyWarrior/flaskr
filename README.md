@@ -16,7 +16,7 @@ To set up the app, you'll need some things installed:
     - Windows: `python -m venv venv`
     - Linux: `python3 -m venv venv`
 
-3. Clone the project with `git clone https://github.com/BokChoyWarrior/flaskr`. In windows you'll need to run this from git bash terminal
+3. Clone the project with `git clone https://github.com/BokChoyWarrior/flaskr`. In windows you'll need to run this from git bash terminal **Make sure you clone into the directory you made in step 1!**
 
 4. Activate the virtual environment:
     - Windows: `venv\Scripts\activate.bat`

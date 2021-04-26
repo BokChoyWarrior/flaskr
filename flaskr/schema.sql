@@ -26,14 +26,14 @@ CREATE TABLE posts (
   body TEXT NOT NULL,
   likes INTEGER DEFAULT 0,
   deleted INTEGER DEFAULT 0,
-  FOREIGN KEY (author_id) REFERENCES user (id)
+  FOREIGN KEY (author_id) REFERENCES users (id)
   FOREIGN KEY (category) references categories (id)
 );
 
 CREATE TABLE likes (
   user_id INTEGER,
   post_id INTEGER,
-  FOREIGN KEY (user_id) REFERENCES user (id)
+  FOREIGN KEY (user_id) REFERENCES users (id)
   FOREIGN KEY (post_id) REFERENCES posts (id)
   PRIMARY KEY (user_id, post_id)
 );
@@ -45,6 +45,7 @@ CREATE TABLE comments (
   content TEXT NOT NULL,
   comment_thread TEXT NOT NULL,
   deleted INTEGER DEFAULT 0,
-  FOREIGN KEY (author_id) REFERENCES user (id)
+  FOREIGN KEY (author_id) REFERENCES users (id)
+  FOREIGN KEY (post_id) REFERENCES posts (id)
 
 );

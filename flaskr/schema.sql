@@ -1,6 +1,8 @@
+-- legacy table names
 DROP TABLE IF EXISTS user;
-DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS post;
+
+DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS posts;
 DROP TABLE IF EXISTS likes;
 DROP TABLE IF EXISTS comments;
@@ -9,7 +11,8 @@ DROP TABLE IF EXISTS categories;
 CREATE TABLE users (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   username TEXT UNIQUE NOT NULL,
-  password TEXT NOT NULL
+  password TEXT NOT NULL,
+  picture TEXT NOT NULL DEFAULT "default.jpg"
 );
 
 CREATE TABLE categories (

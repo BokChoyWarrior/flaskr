@@ -177,6 +177,49 @@ def comment(id):
 
     return redirect(url_for('blog.view', id=id))
 
+@bp.route('/like_post/<int:id>', methods=('POST',))
+@login_required
+def like_post(id):
+    get_post(id, check_author=False)
+    print("Post found!")
+    db = get_db()
+    already_liked = db.execute(
+        'SELECT EXISTS('
+        ' SELECT 1 FROM post_likes'
+        ' WHERE user_id = ? AND post_id = ?'
+        ' )',
+        (g.user['id'], id,)
+    ).fetchone()[0]
+    
+    change = 1
+    if already_liked:
+        change = -1
+
+    db.execute(
+        'UPDATE posts'
+        ' SET likes = likes + ?'
+        ' WHERE posts.id = ?',
+        (change, id,)
+    )
+
+    if already_liked:
+        db.execute(
+            'DELETE FROM post_likes'
+            ' WHERE user_id = ? AND post_id = ?',
+            (g.user['id'], id,)
+        )
+    else:
+        db.execute(
+            'INSERT INTO post_likes (user_id, post_id)'
+            ' VALUES (?, ?)',
+            (g.user['id'], id,)
+        )
+
+    db.commit()
+    return redirect(url_for('blog.view', id=id))
+
+    return redirect(url_for('blog.view', id=id))
+
 @bp.route('/<int:id>/delete', methods=('POST',))
 @login_required
 def delete(id):

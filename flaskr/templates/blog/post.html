@@ -10,8 +10,13 @@
 <article class="media content-section">
     <div class="media-body">
         <div class="article-metadata">
-            <a class="mr-2" href="{{ url_for('blog.user', id=post['author_id']) }}">{{ post['username'] }}</a>
-            <small class="text-muted">{{ post['created'].strftime('%Y-%m-%d') }}</small>
+            <strong class="text-emphasis">{{ post['likes'] }}⭐</strong>
+            <small> | </small>
+            <a class="mr-2" float="right" href="{{ url_for('blog.user', id=post['author_id']) }}">{{ post['username'] }}</a>
+            <small class="text-muted" float="right">{{ post['created'].strftime('%Y-%m-%d') }}</small>
+            <form method="post" id="like_post" action="{{ url_for('blog.like_post', id=post['id']) }}">
+                <button form="like_post" class="btn-info btn btn-sm action" role="button">Like ⭐</button>
+            </form>
         </div>
         <p class="article-content text-break">{{ post['body'] }}</p>
     </div>
@@ -42,6 +47,8 @@
   <article class="media content-section">
     <div class="media-body">
         <div class="article-metadata">
+            <strong>{{ comment['likes'] }}⭐</strong>
+            <small> | </small>
             <a class="mr-2" href="{{ url_for('blog.user', id=comment['author_id']) }}">{{ comment['username'] }}</a>
             <small class="text-muted">{{ comment['created'].strftime('%Y-%m-%d') }}</small>
         </div>

@@ -19,6 +19,8 @@
 <article class="media content-section">
   <div class="media-body">
     <div class="article-metadata">
+    <strong>{{ post['likes'] }}⭐</strong>
+    <small> | </small>
       <a class="mr-2" href="{{ url_for('blog.user', id=user['id']) }}">{{ user['username'] }}</a>
       <small class="text-muted">{{ post['created'].strftime('%Y-%m-%d') }}</small>
     </div>

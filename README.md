@@ -3,9 +3,10 @@ Testing blog for testing things
 
 ### Planned Features
 ##### General
-- [ ] Actual post page
-- [ ] Likes
-- [ ] Threaded comments
+- [x] Actual post page
+- [ ] Likes (WIP)
+- [x] Comments
+    - [ ] System for ~~threaded comments (Backburner)~~
 - [ ] User profile
 - [ ] Different media type posts (video, audio, pic)
 - [ ] Blog sections
@@ -13,7 +14,8 @@ Testing blog for testing things
 
 ##### Tech stuff
 - [ ] Websockets (see likes realtime)
-- [ ] API
+- [ ] The ~~API~~
+	- Api was attempted but should really be moved into it's own service!
 
 
 ## Setup
@@ -57,7 +59,7 @@ export FLASK_ENV=development
 
 8. Initialise database `flask init-db`
 
-9. Run the app with `flask run`!!!
+9. Run the app with `python run.py`(windows), or `python3 run.py`(linux)
 
 You should see output similar to this:
 ```
@@ -72,11 +74,10 @@ You should see output similar to this:
 
 Visit [http://127.0.0.1:5000/](http://127.0.0.1:5000/) to see the app!
 
-
-
 If you have any problems with installation let me know and I can help figure them out!
 
-### Testing
+
+### Testing - on hold and may __**not work**__
 To run some unit tests, you'll first need to install the project to the venv as a module.
 
 1. With the venv active, and in the root directory of the repository, use the command `pip install -e .`.

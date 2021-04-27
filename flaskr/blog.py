@@ -28,6 +28,19 @@ def get_post(id, check_author=True):
 
     return post
 
+def get_user(id):
+    user = get_db().execute(
+        'SELECT u.id, u.username'
+        ' FROM users u'
+        ' WHERE u.id = ?',
+        (id,)
+    ).fetchone()
+
+    if user is None:
+        abort(404, f"User id {id} doesn't exist.")
+
+    return user
+
 def get_comment(id, check_author=True):
     comment = get_db().execute(
         'SELECT c.id, content, created, author_id, username, likes, deleted, post_id'
@@ -43,6 +56,30 @@ def get_comment(id, check_author=True):
         abort(403)
 
     return comment
+
+def check_comment_validity(text):
+    errors = []
+    if not text:
+        errors.append('Comment body is required.')
+    if len(text) > 2048:
+        errors.append('Comment too long!')
+    if len(errors) > 0:
+        return errors
+    return False
+
+def check_post_validity(title, body):
+    errors = []
+    if not title:
+        errors.append('Title is required.')
+    if len(title) > 250:
+        errors.append('Title must be 50 chars or less.')
+    if len(body) > 8192:
+        errors.append('Body text must be 4096 characters or less.')
+    if not body:
+        errors.append('Body is required.')
+    if len(errors) > 0:
+        return errors
+    return False
 
 ##########
 # routes #
@@ -106,6 +143,20 @@ def update(id):
 
     return render_template('blog/update.html', post=post, edit_type="update")
 
+@bp.route('/user/<int:id>')
+def user(id):
+    db = get_db()
+    user = get_user(id)
+    posts = db.execute(
+        'SELECT p.id, p.title, p.body, p.created, likes'
+        ' FROM posts p'
+        ' WHERE p.deleted = 0'
+        ' AND p.author_id = ?'
+        ' ORDER BY created DESC',
+        (id,)
+    ).fetchall()
+    return render_template('blog/user.html', posts=posts, user=user)
+
 @bp.route('/<int:id>/comment', methods=('POST',))
 @login_required
 def comment(id):
@@ -126,39 +177,6 @@ def comment(id):
 
     return redirect(url_for('blog.view', id=id))
 
-def check_comment_validity(text):
-    errors = []
-    if not text:
-        errors.append('Comment body is required.')
-
-    if len(text) > 2048:
-        errors.append('Comment too long!')
-
-    if len(errors) > 0:
-        return errors
-
-    return False
-
-def check_post_validity(title, body):
-    errors = []
-
-    if not title:
-        errors.append('Title is required.')
-
-    if len(title) > 250:
-        errors.append('Title must be 50 chars or less.')
-    
-    if len(body) > 8192:
-        errors.append('Body text must be 4096 characters or less.')
-    
-    if not body:
-        errors.append('Body is required.')
-
-    if len(errors) > 0:
-        return errors
-    
-    return False
-
 @bp.route('/<int:id>/delete', methods=('POST',))
 @login_required
 def delete(id):
@@ -175,7 +193,7 @@ def delete(id):
     flash(message="Post deleted successfully")
     return redirect(url_for('blog.index'))
 
-@bp.route('/<int:id>/delete_comment')
+@bp.route('/<int:id>/delete_comment', methods=('POST',))
 @login_required
 def delete_comment(id):
     comment = get_comment(id)

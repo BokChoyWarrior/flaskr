@@ -20,13 +20,29 @@ def get_post(id, check_author=True):
         (id,)
     ).fetchone()
 
-    if post is None:
-        abort(404, "Post id {0} doesn't exist.".format(id))
+    if post is None or post['deleted'] == 1:
+        abort(404, f"Post id {id} doesn't exist.")
 
     if check_author and post['author_id'] != g.user['id']:
         abort(403)
 
     return post
+
+def get_comment(id, check_author=True):
+    comment = get_db().execute(
+        'SELECT c.id, content, created, author_id, username, likes, deleted, post_id'
+        ' FROM comments c JOIN users u ON c.author_id = u.id'
+        ' WHERE c.id = ?',
+        (id,)
+    ).fetchone()
+
+    if comment is None or comment['deleted'] == 1:
+        abort(404, f"Comment id {id} doesn't exist.")
+
+    if check_author and comment['author_id'] != g.user['id']:
+        abort(403)
+
+    return comment
 
 ##########
 # routes #
@@ -90,6 +106,39 @@ def update(id):
 
     return render_template('blog/update.html', post=post, edit_type="update")
 
+@bp.route('/<int:id>/comment', methods=('POST',))
+@login_required
+def comment(id):
+    text = request.form['comment-box']
+    errors = check_comment_validity(text)
+    if errors:
+        for error in errors:
+            flash(error)
+    else:
+        db = get_db()
+        db.execute(
+            'INSERT INTO comments (author_id, post_id, content)'
+            ' VALUES (?, ?, ?)',
+            (g.user['id'], id, text)
+        )
+        db.commit()
+        return redirect(url_for('blog.view', id=id))
+
+    return redirect(url_for('blog.view', id=id))
+
+def check_comment_validity(text):
+    errors = []
+    if not text:
+        errors.append('Comment body is required.')
+
+    if len(text) > 2048:
+        errors.append('Comment too long!')
+
+    if len(errors) > 0:
+        return errors
+
+    return False
+
 def check_post_validity(title, body):
     errors = []
 
@@ -126,11 +175,28 @@ def delete(id):
     flash(message="Post deleted successfully")
     return redirect(url_for('blog.index'))
 
+@bp.route('/<int:id>/delete_comment')
+@login_required
+def delete_comment(id):
+    comment = get_comment(id)
+    post_id = comment['post_id']
+    print(f"Deleting comment {id}")
+    db = get_db()
+    db.execute(
+        'UPDATE comments'
+        ' SET deleted = 1'
+        ' WHERE id = ?',
+        (id,)
+    )
+    db.commit()
+    flash(message="Comment deleted successfully")
+    return redirect(url_for('blog.view', id=post_id))
+
 @bp.route('/<int:id>/view')
-def view_post(id):
+def view(id):
     db = get_db()
     post = db.execute(
-        "SELECT posts.id, created, title, body, likes, deleted, users.username"
+        "SELECT posts.id, created, author_id, title, body, likes, deleted, users.username"
         " FROM posts"
         " JOIN users ON users.id = posts.author_id"
         " WHERE posts.id = ? AND posts.deleted = 0",
@@ -138,15 +204,16 @@ def view_post(id):
     ).fetchone()
 
     comments = db.execute(
-        "SELECT author_id, content, comment_thread, deleted, likes"
-        " FROM comments"
-        " JOIN users ON users.id = comments.author_id"
-        " WHERE comments.post_id = ?",
+        "SELECT c.id, author_id, content, likes, created, username, c.post_id"
+        " FROM comments c"
+        " JOIN users u ON c.author_id = u.id"
+        " WHERE c.post_id = ? AND c.deleted = 0"
+        " ORDER BY created DESC",
         (id,)
     ).fetchall()
-
-    print(post)
-    print(comments)
     
+    if not post:
+        flash(message="That post does not exist!")
+        return redirect(url_for('blog.index'))
 
     return render_template('blog/post.html', post=post, comments=comments)

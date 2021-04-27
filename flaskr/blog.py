@@ -1,5 +1,5 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for
+    Blueprint, flash, g, redirect, render_template, request, url_for, jsonify
 )
 from werkzeug.exceptions import abort
 
@@ -15,7 +15,7 @@ bp = Blueprint('blog', __name__)
 def get_post(id, check_author=True):
     post = get_db().execute(
         'SELECT p.id, title, body, created, author_id, username, likes, deleted'
-        ' FROM posts p JOIN user u ON p.author_id = u.id'
+        ' FROM posts p JOIN users u ON p.author_id = u.id'
         ' WHERE p.id = ?',
         (id,)
     ).fetchone()
@@ -38,7 +38,7 @@ def index():
     posts = db.execute(
         'SELECT posts.id, title, body, created, author_id, username, likes, deleted'
         ' FROM posts'
-        ' JOIN user u ON posts.author_id = u.id'
+        ' JOIN users u ON posts.author_id = u.id'
         ' WHERE posts.deleted = 0'
         ' ORDER BY created DESC'
     ).fetchall()
@@ -118,9 +118,35 @@ def delete(id):
     db = get_db()
     db.execute(
         'UPDATE posts'
-        ' SET deleted = ?'
+        ' SET deleted = 1'
         ' WHERE id = ?',
-        (1, id,)
+        (id,)
     )
     db.commit()
+    flash(message="Post deleted successfully")
     return redirect(url_for('blog.index'))
+
+@bp.route('/<int:id>/view')
+def view_post(id):
+    db = get_db()
+    post = db.execute(
+        "SELECT posts.id, created, title, body, likes, deleted, users.username"
+        " FROM posts"
+        " JOIN users ON users.id = posts.author_id"
+        " WHERE posts.id = ? AND posts.deleted = 0",
+        (id,)
+    ).fetchone()
+
+    comments = db.execute(
+        "SELECT author_id, content, comment_thread, deleted, likes"
+        " FROM comments"
+        " JOIN users ON users.id = comments.author_id"
+        " WHERE comments.post_id = ?",
+        (id,)
+    ).fetchall()
+
+    print(post)
+    print(comments)
+    
+
+    return render_template('blog/post.html', post=post, comments=comments)

@@ -44,7 +44,7 @@ New Post
     <div class="col-md-2 d-flex justify-content-center align-items-center">
       <form id="delete" action="{{ url_for('blog.delete', id=post['id']) }}" method="post">
         <input form="delete" class="danger btn btn-danger col-md" type="submit" value="Delete"
-          onclick="return confirm('Are you sure?');"></input>
+          onclick="return confirm('Are you sure you want to delete this post?');"></input>
       </form>
     </div>
     {% endif %}

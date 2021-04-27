@@ -2,7 +2,6 @@ import os
 
 from flask import Flask, redirect, url_for
 
-
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
@@ -25,14 +24,17 @@ def create_app(test_config=None):
         pass
 
     # initialise modules inside app
-    from . import db
+    from flaskr import db
     db.init_app(app)
     
     # register blueprints
-    from . import auth
-    app.register_blueprint(auth.bp)
+    from flaskr import api
+    app.register_blueprint(api.bp, url_prefix='/api')
 
-    from . import blog
+    from flaskr import auth
+    app.register_blueprint(auth.bp, url_prefix='/auth')
+
+    from flaskr import blog
     app.register_blueprint(blog.bp)
     app.add_url_rule('/', endpoint='index')
 
@@ -48,13 +50,5 @@ def create_app(test_config=None):
     @app.route('/cats')
     def cats():
         return 'Insert cat pictures here!'
-
-    @app.route('/api')
-    def api():
-        return {
-            "name": "cat",
-            "id": 591212,
-            "message": "Thanks for using cat API!",
-        }
 
     return app
